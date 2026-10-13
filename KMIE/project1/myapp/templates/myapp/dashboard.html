@@ -1,0 +1,197 @@
+{% extends "myapp/base.html" %}
+
+{% block title %}Counsellor Dashboard | KMIE{% endblock %}
+
+{% block content %}
+<h1>Counsellor Dashboard</h1>
+<p class="muted">Track student enquiries, leads, demo bookings and attendance.</p>
+
+<div class="grid">
+    <div class="stat">
+        Total Enquiries
+        <strong>{{ total_enquiries }}</strong>
+    </div>
+
+    <div class="stat">
+        Unique Students
+        <strong>{{ unique_students }}</strong>
+    </div>
+
+    <div class="stat">
+        Total Demos Booked
+        <strong>{{ total_demos }}</strong>
+    </div>
+
+    <div class="stat">
+        Demo Attendance
+        <strong>{{ attendance_count }}</strong>
+    </div>
+</div>
+
+<div class="card" style="margin-top: 24px;">
+    <h2>Filter Records</h2>
+
+    <form method="get" class="filter-row">
+        <div>
+            <label>Class</label>
+            <select name="student_class">
+                <option value="">All classes</option>
+                <option value="11"
+                    {% if student_class == "11" %}selected{% endif %}>
+                    Class 11
+                </option>
+                <option value="12"
+                    {% if student_class == "12" %}selected{% endif %}>
+                    Class 12
+                </option>
+            </select>
+        </div>
+
+        <div>
+            <label>Course</label>
+            <select name="course">
+                <option value="">All courses</option>
+                <option value="NEET Chemistry"
+                    {% if course == "NEET Chemistry" %}selected{% endif %}>
+                    NEET Chemistry
+                </option>
+                <option value="JEE Chemistry"
+                    {% if course == "JEE Chemistry" %}selected{% endif %}>
+                    JEE Chemistry
+                </option>
+            </select>
+        </div>
+
+        <div>
+            <label>Booking Date</label>
+            <input type="date" name="booking_date" value="{{ booking_date }}">
+        </div>
+
+        <div>
+            <label>Booking Status</label>
+            <select name="status">
+                <option value="">All statuses</option>
+                <option value="Booked"
+                    {% if status == "Booked" %}selected{% endif %}>
+                    Booked
+                </option>
+                <option value="Attended"
+                    {% if status == "Attended" %}selected{% endif %}>
+                    Attended
+                </option>
+                <option value="Cancelled"
+                    {% if status == "Cancelled" %}selected{% endif %}>
+                    Cancelled
+                </option>
+            </select>
+        </div>
+
+        <div>
+            <button type="submit">Apply Filters</button>
+            <a class="btn" href="{% url 'dashboard' %}">Reset</a>
+        </div>
+    </form>
+</div>
+
+<div class="card">
+    <h2>Lead Management</h2>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Lead ID</th>
+                    <th>Student</th>
+                    <th>Mobile</th>
+                    <th>Class</th>
+                    <th>Course</th>
+                    <th>Source</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for enquiry in enquiries %}
+                <tr>
+                    <td>{{ enquiry.lead_id|truncatechars:13 }}</td>
+                    <td>{{ enquiry.student.name }}</td>
+                    <td>{{ enquiry.student.mobile }}</td>
+                    <td>{{ enquiry.get_student_class_display }}</td>
+                    <td>{{ enquiry.course }}</td>
+                    <td>{{ enquiry.source }}</td>
+                    <td>{{ enquiry.created_at|date:"d M Y" }}</td>
+                    <td>{{ enquiry.status }}</td>
+                    <td>
+                        <a href="{% url 'book_demo_with_enquiry' enquiry.id %}">
+                            Book Demo
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9">No enquiries match these filters.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card">
+    <h2>Demo Bookings</h2>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Course</th>
+                    <th>Demo Date</th>
+                    <th>Demo Time</th>
+                    <th>Status</th>
+                    <th>Update Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for booking in bookings %}
+                <tr>
+                    <td>{{ booking.student.name }}</td>
+                    <td>{{ booking.enquiry.course }}</td>
+                    <td>{{ booking.booking_date|date:"d M Y" }}</td>
+                    <td>{{ booking.get_booking_time_display }}</td>
+                    <td>{{ booking.status }}</td>
+                    <td>
+                        <form class="inline-form" method="post"
+                            action="{% url 'update_booking_status' booking.id %}">
+                            {% csrf_token %}
+                            <select name="status">
+                                <option value="Booked"
+                                    {% if booking.status == "Booked" %}selected{% endif %}>
+                                    Booked
+                                </option>
+                                <option value="Attended"
+                                    {% if booking.status == "Attended" %}selected{% endif %}>
+                                    Attended
+                                </option>
+                                <option value="Cancelled"
+                                    {% if booking.status == "Cancelled" %}selected{% endif %}>
+                                    Cancelled
+                                </option>
+                            </select>
+                            <button type="submit">Save</button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6">No demo bookings found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

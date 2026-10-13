@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}KMIE Student Portal{% endblock %}</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6fb;
+            color: #20243a;
+        }
+
+        nav {
+            background: #27245f;
+            padding: 18px 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            color: white;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 16px;
+            font-weight: bold;
+        }
+
+        .brand { font-size: 20px; font-weight: bold; }
+
+        main {
+            max-width: 1150px;
+            margin: 32px auto;
+            padding: 0 18px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 14px;
+            padding: 24px;
+            margin-bottom: 22px;
+            box-shadow: 0 4px 18px #1725540d;
+        }
+
+        h1 { margin-top: 0; font-size: 28px; }
+        h2 { font-size: 20px; }
+
+        label {
+            display: block;
+            margin: 15px 0 7px;
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d6d9e6;
+            border-radius: 8px;
+            background: white;
+            font-size: 15px;
+        }
+
+        button, .btn {
+            background: #5145cd;
+            color: white;
+            padding: 11px 17px;
+            border: 0;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+        }
+
+        button:hover, .btn:hover { background: #3730a3; }
+
+        .form-button { margin-top: 22px; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .stat {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e5e7f0;
+        }
+
+        .stat strong {
+            display: block;
+            font-size: 28px;
+            color: #5145cd;
+            margin-top: 10px;
+        }
+
+        .table-wrap { overflow-x: auto; }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            min-width: 700px;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #e8eaf2;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th { background: #f7f7fc; }
+
+        .message {
+            padding: 13px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            background: #e9f8ee;
+            color: #176536;
+        }
+
+        .errorlist { color: #b42318; }
+
+        .filter-row {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+            align-items: end;
+        }
+
+        .filter-row label { margin-top: 0; }
+
+        .muted { color: #73778b; font-size: 14px; }
+        .inline-form { display: flex; gap: 6px; align-items: center; }
+        .inline-form select { min-width: 110px; }
+
+        @media (max-width: 760px) {
+            .grid { grid-template-columns: repeat(2, 1fr); }
+            .filter-row { grid-template-columns: 1fr 1fr; }
+            nav a { margin-left: 8px; }
+        }
+
+        @media (max-width: 430px) {
+            .grid, .filter-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <div class="brand">KMIE Student Portal</div>
+        <div>
+            <a href="{% url 'enquiry_create' %}">New Enquiry</a>
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+        </div>
+    </nav>
+
+    <main>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

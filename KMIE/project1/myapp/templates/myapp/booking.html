@@ -1,0 +1,57 @@
+{% extends "myapp/base.html" %}
+
+{% block title %}Book Demo | KMIE{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1>Book a Demo Class</h1>
+
+    <p>
+        Student:
+        <strong>{{ enquiry.student.name }}</strong>
+    </p>
+
+    <p>
+        Lead ID:
+        <code>{{ enquiry.lead_id }}</code>
+    </p>
+
+    <p class="muted">
+        Select a date and one of the available demo time choices.
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+
+        {{ form.enquiry_id }}
+
+        {% if form.non_field_errors %}
+            {{ form.non_field_errors }}
+        {% endif %}
+
+        {% for field in form %}
+            {% if field.name != "enquiry_id" %}
+                <label for="{{ field.id_for_label }}">
+                    {% if field.name == "mobile" %}
+                        Student Mobile Number
+                    {% elif field.name == "booking_date" %}
+                        Demo Date
+                    {% elif field.name == "booking_time" %}
+                        Demo Time
+                    {% endif %}
+                </label>
+
+                {{ field }}
+
+                {% for error in field.errors %}
+                    <p class="errorlist">{{ error }}</p>
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+
+        <button class="form-button" type="submit">
+            Confirm Demo Booking
+        </button>
+    </form>
+</div>
+{% endblock %}

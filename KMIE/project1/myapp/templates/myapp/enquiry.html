@@ -1,0 +1,32 @@
+{% extends "myapp/base.html" %}
+
+{% block title %}Student Enquiry | KMIE{% endblock %}
+
+{% block content %}
+<div class="card">
+    <p class="muted">KOMALI MAM INSTITUTE OF EXCELLENCE</p>
+    <h1>Student Enquiry Form</h1>
+    <p>Register a new enquiry or add another enquiry for a returning student.</p>
+
+    <form method="post">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            {{ form.non_field_errors }}
+        {% endif %}
+
+        {% for field in form %}
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+
+            {% for error in field.errors %}
+                <p class="errorlist">{{ error }}</p>
+            {% endfor %}
+        {% endfor %}
+
+        <button class="form-button" type="submit">
+            Submit Enquiry
+        </button>
+    </form>
+</div>
+{% endblock %}
